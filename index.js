@@ -36,10 +36,16 @@ app.get('/api/info', (request, response) => {
   )
 })
 const generateId = () => {
-  const maxId = persons.length > 0
-    ? Math.max(...persons.map(n => n.id))
-    : 0
-  return maxId + 1
+  var id = 0;
+  while(true){
+    id = Math.floor(Math.random()*10000)
+    if(!persons.map(n => n.id).includes(id)){
+      break;
+    }
+    
+  }
+  console.log(id)
+  return  id
 }
 
 app.post('/api/persons', (request, response) => {
