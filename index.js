@@ -44,19 +44,22 @@ const generateId = () => {
     }
     
   }
-  console.log(id)
+
   return  id
 }
 
 app.post('/api/persons', (request, response) => {
   const body = request.body
 
-  if (!body.name) {
+  if (!body.name || !body.number) {
     return response.status(400).json({ 
       error: 'content missing' 
     })
   }
-
+  if(persons.map(person => person.name.toLowerCase()).includes(body.name.toLowerCase())){
+    response.status(409).end()
+  }
+  else{
   const person = {
     name: body.name,
     number: body.number || false,
@@ -66,6 +69,7 @@ app.post('/api/persons', (request, response) => {
   persons = persons.concat(person)
 
   response.json(person)
+}
 })
 
 app.get('/api/persons/:id', (request, response) => {
@@ -74,16 +78,19 @@ app.get('/api/persons/:id', (request, response) => {
   if (person) {
     response.json(person)
   } else {
-    console.log('x')
     response.status(404).end()
   }
 })
 
 app.delete('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)
-  persons = persons.filter(person => person.id !== id)
-
-  response.status(204).end()
+  if(persons.map(person => person.id).includes(id)){
+    persons = persons.filter(person => person.id !== id)
+    response.status(204).end()
+  }
+  else{
+    response.status(404).end()
+  }
 })
 
 const PORT = 3001
