@@ -57,7 +57,9 @@ app.post('/api/persons', (request, response) => {
     })
   }
   if(persons.map(person => person.name.toLowerCase()).includes(body.name.toLowerCase())){
-    response.status(409).end()
+    response.status(409).json({
+      error: 'person exists already'
+    })
   }
   else{
   const person = {
